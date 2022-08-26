@@ -1,0 +1,103 @@
+================== API ===================
+
+------------------------------------------
+GET     | /posts            | index
+GET     | /posts/{id}       | show
+POST    | /posts            | store
+PATCH   | /posts/{id}       | update
+delete  | /posts/{id}       | delete
+------------------------------------------
+GET     | /categories       | index
+GET     | /categories/{id}  | show
+POST    | /categories       | store
+PATCH   | /categories/{id}  | update
+delete  | /categories/{id}  | delete
+------------------------------------------
+GET     | /users            | index
+GET     | /users/{id}       | show
+POST    | /users            | store
+PATCH   | /users/{id}       | update
+delete  | /users/{id}       | delete
+------------------------------------------
+GET     | /roles            | index
+GET     | /roles/{id}       | show
+POST    | /roles            | store
+PATCH   | /roles/{id}       | update
+delete  | /roles/{id}       | delete
+------------------------------------------
+GET     | /visitors            | index
+GET     | /visitors/{id}       | show
+POST    | /visitors            | store
+PATCH   | /visitors/{id}       | update
+delete  | /visitors/{id}       | delete
+------------------------------------------
+
+-- Posts
+Id
+Title
+Cover
+Description
+Content
+Owner
+Tags
+number of views
+Created_at
+Updated_at
+
+-- Categories
+Id
+Name
+Created_at
+Updated_at
+
+-- Users
+Id
+Username
+First Name
+Last Name
+Email
+Password
+Picture
+blocked (bool)
+Created_at
+Updated_at
+
+-- Roles
+Id
+Name
+Created_at
+Updated_at
+
+-- Visitors
+Id
+ip
+Created_at
+Updated_at
+
+The user can create an account ,login and logout.
+There is two roles:
+- Admin
+- Member
+
+The admin can:
+- see the whole website states
+- create update and delete users
+- edit others posts
+- do whatever the member can do
+
+The memeber can:
+- create his own posts , update and delete them
+- create , update and delete categories
+- comment and like posts  /??_??/
+
+Each post can have multiple tags categories.
+
+
+
+---- Tables
+users
+posts
+categories
+roles
+visitors
+category_post
