@@ -16,9 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(["role" => function ($query) {
-            $query->select("id", "name");
-        }])->get();
+        $this->authorize("viewany", User::class);
+        $users = User::with(["role:id,name"])->get();
         return $users;
     }
 

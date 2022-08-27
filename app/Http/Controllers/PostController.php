@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 
 class PostController extends Controller
 {
@@ -15,12 +17,20 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(["categories" => function ($query) {
-            $query->select("name");
-        }])->get();
-
+        $posts = Post::with("categories:name")->get();
         return $posts;
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index_own()
+    {
+        return Post::with("categories:name")->whereBelongsTo(auth()->user())->get();
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -52,9 +62,9 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::with(["categories" => function ($query) {
-            $query->select("name");
-        }])->find($id);
+        $post = Post::with("categories:name")->find($id);
+
+        return $post;
     }
 
     /**
@@ -74,11 +84,14 @@ class PostController extends Controller
             "tags" => ["nullable", 'regex:/^(\w+\|\w+)+$/i'],
         ]);
 
+
+        $post = Post::fund($id);
+        $this->authorize("update", $post);
+
         if ($request->hasFile("cover")) {
             $validated["cover"] = $request->file("cover")->store("posts_covers", "public");
         }
 
-        $post = Post::fund($id);
         $post->update($validated);
 
         return  $post;
@@ -93,6 +106,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
+        $this->authorize("delete", $post);
         File::delete(public_path("storage/" . $post->cover));
         return $post->delete();
     }

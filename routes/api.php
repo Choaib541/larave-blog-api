@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{PostController, CategoryController, UserController, RoleController, VisitorController};
+use App\Http\Controllers\{AuthController, PostController, CategoryController, UserController, RoleController, VisitorController};
 
 /*
 |--------------------------------------------------------------------------
@@ -15,18 +15,57 @@ use App\Http\Controllers\{PostController, CategoryController, UserController, Ro
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::apiResource('posts', PostController::class)->only([
+        "store",
+        "update",
+        "destroy",
+    ]);
+
+    Route::get('posts/own', [PostController::class, "index_own"]);
+
+    Route::apiResource('categories', CategoryController::class)->only([
+        "store",
+        "update",
+        "destroy",
+    ])->middleware("can:admin");
+
+    Route::apiResource("users", UserController::class)->middleware("can:admin");
+
+    Route::apiResource("roles", RoleController::class)->only([
+        "store",
+        "update",
+        "destroy",
+    ])->middleware("can:admin");
+
+    Route::apiResource("visitors", VisitorController::class)->only([
+        "index",
+        "store",
+        "destroy"
+    ])->middleware("can:admin");
+
+    Route::post("/logout", [AuthController::class, "logout"]);
+    Route::get("/profile", [AuthController::class, "profile"]);
 });
 
-Route::apiResource("posts", PostController::class);
 
-Route::apiResource("categories", CategoryController::class);
+// ================================================================
 
-Route::apiResource("users", UserController::class);
+Route::post("/auth", [AuthController::class, "authenticate"]);
+Route::post("/register", [AuthController::class, "register"]);
 
-Route::apiResource("roles", RoleController::class);
+// ================================================================
 
-Route::apiResource("visitors", VisitorController::class)->except([
-    "update"
-]);
+Route::get("/posts", [PostController::class, "index"]);
+Route::get("/posts/{id}", [PostController::class, "show"]);
+
+// ================================================================
+
+Route::get("/categories", [CategoryController::class, "index"]);
+
+// ================================================================
+
+Route::fallback(function () {
+    return "Route Not Found";
+});
