@@ -17,8 +17,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("categories:name")->get();
-        return $posts;
+        if(isset(request()->search)){
+            return Post::search(request()->search); 
+        }else{
+            return Post::with(["categories:name", "user:id,username,picture"])->paginate(9);
+        }
     }
 
     /**

@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::withCount("posts")->get();
+        return Category::withCount("posts")->latest()->paginate(16);
     }
 
     /**
