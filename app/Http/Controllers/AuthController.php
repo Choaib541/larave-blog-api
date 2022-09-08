@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-
-
     public function authenticate(Request $request)
     {
         $validated = $request->validate([
@@ -19,8 +17,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($validated)) {
             return response([
-                "status" => false,
-                "message" => "password is not correct"
+                "errors" => ["password"=>["password is not correct"]]
             ], 400);
         }
 
@@ -74,4 +71,15 @@ class AuthController extends Controller
         $user = auth()->user();
         return $user->load("role:id,name");
     }
+
+    public function profile_update(Request $request){
+        $vamidated = $request->validate([
+            "firstname" => ["nullable"],
+            "email" => ["nullable", "unique:users,email"],
+            "lastname" => ["nullable"],
+            "username" => ["nullable", "unique:users,username"],
+            "password" => ["nullable", "confirmed", "min:8"]
+        ]); 
+    }
+
 }

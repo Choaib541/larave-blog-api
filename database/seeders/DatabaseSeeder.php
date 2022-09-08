@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class
         );
         User::factory(10)->create();
-        Post::factory(10)->create();
+        Post::factory(100)->create();
         Category::factory(10)->create();
         Category_post::factory(10)->create();
 
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'email' => "camado@gmail.com",
             'password' => bcrypt("password"),
             'role_id' => 1,
-            "picture" => "site_images/user_placeholder.png",
+            "picture" => "site_images/user_placeholder.jpg",
             "username" => "camado",
         ]);
     }

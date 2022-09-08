@@ -46,14 +46,12 @@ class PostController extends Controller
         $validated = $request->validate([
             "title" => ["required", "min:3"],
             "cover" => ["required"],
-            "description" => ["required", "min:3"],
             "content" => ["required", "min:3"],
+            "description" => ["required", "min:3"],
             "user_id" => ["required", "exists:users,id"],
             "tags" => ["required", 'regex:/^(\w+\|\w+)+$/i'],
         ]);
-
         $validated["cover"] = $request->file("cover")->store("posts_covers", "public");
-
         return  response(Post::create($validated), 201);
     }
 
@@ -65,7 +63,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with("categories:name")->find($id);
+        $post = Post::with(["categories:id,name", "user:id,username,picture"])->find($id);
 
         return $post;
     }
