@@ -27,8 +27,8 @@ class PostFactory extends Factory
 
         return [
             "title" => $this->faker->name(),
-            "cover" => "site_images/post_placeholder.jpg",
-            "description" => $this->faker->paragraph(),
+            "cover" => "posts_covers/post_placeholder.jpg",
+            "description" => $this->faker->text(500),
             "content" => $this->faker->paragraph(),
             "user_id" => $this->faker->numberBetween(1, 10),
             "tags" => $tags,

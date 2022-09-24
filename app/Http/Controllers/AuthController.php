@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -17,7 +20,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($validated)) {
             return response([
-                "errors" => ["password"=>["password is not correct"]]
+                "errors" => ["password" => ["password is not correct"]]
             ], 400);
         }
 
@@ -72,14 +75,42 @@ class AuthController extends Controller
         return $user->load("role:id,name");
     }
 
-    public function profile_update(Request $request){
-        $vamidated = $request->validate([
-            "firstname" => ["nullable"],
-            "email" => ["nullable", "unique:users,email"],
-            "lastname" => ["nullable"],
+    public function profile_update(Request $request)
+    {
+        $validated = $request->validate([
             "username" => ["nullable", "unique:users,username"],
-            "password" => ["nullable", "confirmed", "min:8"]
-        ]); 
-    }
+            "firstname" => ["nullable"],
+            "lastname" => ["nullable"],
+            "email" => ["nullable", "email:filter", "unique:users,email"],
+            "password" => ["nullable", "confirmed", "min:8"],
+            "current_password" => ["nullable"]
+        ]);
 
+        $user = auth()->user();
+
+
+        if (isset($validated["password"])) {
+            if (!isset($validated["current_password"])) {
+                throw ValidationException::withMessages(["current_password" => "The Current Password is Required"]);
+            } else {
+                if (!Hash::check($validated["current_password"], $user->password)) {
+                    throw ValidationException::withMessages(["current_password" => "The Current Password is Not Correct"]);
+                }
+                $validated["password"] = bcrypt($validated["password"]);
+            }
+        }
+
+
+        if ($request->hasFile("picture")) {
+            $path = public_path("storage/" . $user->picture);
+
+            if (file_exists($path)) File::delete($path);
+
+            $validated["picture"] = $request->file("picture")->store("users_pictures", "public");
+        }
+
+
+        $user->update($validated);
+        return $user;
+    }
 }

@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'email' => "camado@gmail.com",
             'password' => bcrypt("password"),
             'role_id' => 1,
-            "picture" => "site_images/user_placeholder.jpg",
+            "picture" => "users_pictures/user_placeholder.jpg",
             "username" => "camado",
         ]);
     }

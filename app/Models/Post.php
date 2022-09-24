@@ -21,10 +21,11 @@ class Post extends Model
         "views_count",
     ];
 
-    public static function search($search){
-        return self::with("categories:name", "user:id,username,picture")->whereHas("categories", function(Builder $query) use($search) {
+    public static function search($search)
+    {
+        return self::with("categories:name", "user:id,username,picture")->whereHas("categories", function (Builder $query) use ($search) {
             $query->where("categories.name", "like", "%$search%");
-        })->orWhereHas("user", function(Builder $query) use($search) {
+        })->orWhereHas("user", function (Builder $query) use ($search) {
             $query->where("username", "like", "%$search%");
         })->orWhere("title", "like", "%$search%")->paginate(9);
     }

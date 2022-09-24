@@ -24,7 +24,7 @@ class UserFactory extends Factory
             'email_verified_at' => $this->faker->dateTime(),
             'password' => bcrypt("password"),
             'role_id' => 2,
-            "picture" => "site_images/user_placeholder.jpg",
+            "picture" => "users_pictures/user_placeholder.jpg",
             "username" => $this->faker->name(),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
