@@ -16,7 +16,6 @@ use App\Http\Controllers\{AuthController, PostController, CategoryController, Us
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-
     Route::apiResource('posts', PostController::class)->only([
         "store",
         "update",
@@ -31,7 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
         "destroy",
     ])->middleware("can:admin");
 
-    Route::apiResource("users", UserController::class)->middleware("can:admin");
+    Route::apiResource("users", UserController::class)->except([
+        "show"
+    ]);
+
 
     Route::apiResource("roles", RoleController::class)->only([
         "store",
@@ -55,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post("/auth", [AuthController::class, "authenticate"]);
 Route::post("/register", [AuthController::class, "register"]);
-
+Route::get("/users/{id}", [UserController::class, "show"]);
 // ================================================================
 
 Route::get("/posts", [PostController::class, "index"]);

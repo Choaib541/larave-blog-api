@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'firstname',
         'lastname',
+        "bio",
         'email',
         'email_verified_at',
         'password',
@@ -28,9 +29,6 @@ class User extends Authenticatable
         "username",
         "blocked"
     ];
-
-
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,6 +48,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function isAdmin()
+    {
+        return $this->role->id == Role::ADMIN;
+    }
+
+    public function isMember()
+    {
+        $this->role->id == Role::MEMBER;
+    }
 
     public function role()
     {

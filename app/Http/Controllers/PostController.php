@@ -67,8 +67,16 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with(["categories:id,name", "user:id,username,picture"])->find($id);
 
+        $post = Post::find($id);
+
+        $response = auth("sanctum")->user();
+
+        return ["result" => $response->can("view", $post)];
+
+        die();
+
+        $post = Post::with(["categories:id,name", "user:id,username,picture"])->find($id);
         return $post;
     }
 

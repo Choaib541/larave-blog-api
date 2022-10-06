@@ -2,13 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
-class PostPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -20,32 +18,23 @@ class PostPolicy
      */
     public function viewAny(User $user)
     {
-        //
+
+
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Post $post)
+    public function view(User $user, User $model)
     {
-        echo json_encode(
-            [
-                $user,
-                $post,
-                $user->id,
-                $post->user_id,
-                $user->id == $post->user_id
-            ],
-            JSON_PRETTY_PRINT
-        );
 
-        die();
-        // return $user->role->name == ;
-        // return Response::deny('You must be a super administrator.');
+
+        return $user->isAdmin() || ($user->id == $model->id);
     }
 
     /**
@@ -63,10 +52,10 @@ class PostPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Post $post)
+    public function update(User $user, User $model)
     {
         //
     }
@@ -75,10 +64,10 @@ class PostPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user, User $model)
     {
         //
     }
@@ -87,10 +76,10 @@ class PostPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Post $post)
+    public function restore(User $user, User $model)
     {
         //
     }
@@ -99,10 +88,10 @@ class PostPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Post $post)
+    public function forceDelete(User $user, User $model)
     {
         //
     }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -54,11 +56,34 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(request $request, $id)
     {
-        return User::with(["role" => function ($query) {
-            $query->select("id", "name");
-        }])->find($id);
+        $user = User::findOrFail($id);
+
+        if (Auth::guard("sanctum")->check()) {
+
+            // return ["response" => Auth::guard("sanctum")->user()->can("view", $user)];
+
+            if (Auth::guard("sanctum")->user()->can("view", $user)) {
+                return $user->load("role:id,name");
+            } else {
+                return $user->load("role:id,name")->only([
+                    "username",
+                    "firstname",
+                    "lastname",
+                    "picture",
+                    "role"
+                ]);
+            }
+        } else {
+            return $user->load("role:id,name")->only([
+                "username",
+                "firstname",
+                "lastname",
+                "picture",
+                "role"
+            ]);
+        }
     }
 
     /**
@@ -103,6 +128,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        // return ["mesage" => "okay"];
+
+
         $user = User::find($id);
         if ($user->picture) {
             File::delete(public_path("storage/" . $user->picture));

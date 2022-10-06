@@ -39,6 +39,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'firstname' => ["required", "min:3"],
             'lastname' => ["required", "min:3"],
+            "bio" => ["required", "min:3"],
             'email' => ["required", "email", "unique:users,email"],
             'password' => ["required", "min:8", "confirmed"],
             "username" => ["required", "min:3", "unique:users,username"],
@@ -54,18 +55,16 @@ class AuthController extends Controller
             $validated
         );
 
-        $abilites = [$user->role->name];
-
         return response([
             "user" => $user,
-            'token' => $user->createToken("API TOKEN", $abilites)->plainTextToken
+            'token' => $user->createToken("API TOKEN")->plainTextToken
         ], 201);
     }
 
 
     public function logout()
     {
-        return auth()->user()->tokens()->delete();
+        return ["Tokens Deleted" => auth()->user()->tokens()->delete()];
     }
 
 

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string("picture")->nullable();
             $table->string("username")->unique();
             $table->boolean("blocked")->default(false);
+            $table->string("bio");
             $table->rememberToken();
             $table->timestamps();
         });

@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'firstname' => "camado",
             'lastname' => "choaib",
+            "bio" => fake()->paragraph(),
             'email' => "camado@gmail.com",
             'password' => bcrypt("password"),
             'role_id' => 1,
